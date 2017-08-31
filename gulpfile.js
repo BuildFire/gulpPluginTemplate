@@ -32,11 +32,11 @@ gulp.task('html', function(){
     return gulp.src(['widget/**/*.html','control/**/*.html'],{base: '.'})
         /// replace all the <!-- build:bundleJSFiles  --> comment bodies
         /// with scripts.min.js with cache buster
-        .pipe(htmlReplace({bundleJSFiles:"scripts.min.js?v=" + (new Date().getTime())  }))
+        .pipe(htmlReplace({
+            bundleJSFiles:"scripts.min.js?v=" + (new Date().getTime())
+            ,bundleCSSFiles:"styles.min.css?v=" + (new Date().getTime())
+        }))
 
-        /// replace all the <!-- build:bundleCSSFiles  --> comment bodies
-        /// with styes.min.css with cache buster
-        .pipe(htmlReplace({bundleJSFiles:"scripts.min.js?v=" + (new Date().getTime())  }))
 
         /// then strip the html from any comments
         .pipe(minHTML({removeComments:true,collapseWhitespace:true}))
