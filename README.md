@@ -54,7 +54,7 @@ this will merge, minify and obfescate all files within these two comments into o
 if the order matters then edit the `gulpfile.js`
 look for the array of tasks that need altereing. 
 
-* example:*
+*example:*
 ````
 var cssTasks=[
     {name:"widgetCSS",src:"widget/**/*.css",dest:"/widget"}
