@@ -46,7 +46,7 @@ gulp.task('html', function(){
 });
 
 gulp.task('resources', function(){
-    return gulp.src(['resources/*'],{base: '.'})
+    return gulp.src(['resources/*','plugin.json'],{base: '.'})
         .pipe(gulp.dest(destinationFolder ));
 });
 
