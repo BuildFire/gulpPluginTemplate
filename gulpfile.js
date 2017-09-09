@@ -6,6 +6,7 @@ const concat = require('gulp-concat');
 const strip = require('gulp-strip-comments');
 const htmlReplace = require('gulp-html-replace');
 const uglify = require('gulp-uglify');
+const eslint = require('gulp-eslint');
 const imagemin = require('gulp-imagemin');
 const gulpSequence = require('gulp-sequence');
 
@@ -57,9 +58,47 @@ const jsTasks=[
     ,{name:"controlSettingsJS",src:"control/settings/**/*.js",dest:"/control/settings"}
 ];
 
+
+gulp.task('lint', () => {
+    // ESLint ignores files with "node_modules" paths.
+    // So, it's best to have gulp ignore the directory as well.
+    // Also, Be sure to return the stream from the task;
+    // Otherwise, the task may end before the stream has finished.
+    return gulp.src(['widget/**/*.js','control/**/*.js'])
+    // eslint() attaches the lint output to the "eslint" property
+    // of the file object so it can be used by other modules.
+        .pipe(eslint({
+            "env": {
+                "browser": true,
+                "es6": true
+            },
+            "extends": "eslint:recommended",
+            "parserOptions": {
+                "sourceType": "module"
+            },
+            "rules": {
+                "semi": [
+                    "error",
+                    "always"
+                ],
+                "no-console":[
+                    "off"
+                ]
+            }
+        }))
+        // eslint.format() outputs the lint results to the console.
+        // Alternatively use eslint.formatEach() (see Docs).
+        .pipe(eslint.format())
+        // To have the process exit with an error code (1) on
+        // lint error, return the stream and pipe to failAfterError last.
+        .pipe(eslint.failAfterError());
+});
+
 jsTasks.forEach(function(task){
     gulp.task(task.name, function() {
         return gulp.src(task.src,{base: '.'})
+
+
 
              /// obfuscate and minify the JS files
             .pipe(uglify())
@@ -119,4 +158,4 @@ var buildTasksToRun=['html','resources','images'];
 cssTasks.forEach(function(task){  buildTasksToRun.push(task.name)});
 jsTasks.forEach(function(task){  buildTasksToRun.push(task.name)});
 
-gulp.task('build', gulpSequence('clean',buildTasksToRun) );
+gulp.task('build', gulpSequence('lint','clean',buildTasksToRun) );
